@@ -1,0 +1,44 @@
+# Build outputs and dependency caches
+/target/
+/.m2-cache/
+/.mvn-cache/
+node_modules/
+/test-results/
+/playwright-report/
+/coverage/
+*.class
+*.log
+
+# Local configuration and secrets (templates are safe to commit)
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Personal vault exports, emergency kits and database backups
+guard-emergency-kit*.txt
+guard-encrypted-backup*.json
+/backups/
+/data/
+/postgres-data/
+/pgdata/
+*.dump
+*.backup
+*.sql.gz
+
+# IDE and operating-system files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~

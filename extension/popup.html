@@ -1,0 +1,6 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Guard</title><link rel="stylesheet" href="popup.css"><script type="module" src="popup.js"></script></head><body>
+<header><strong>◈ GUARD</strong><button id="lock" hidden>Выход</button></header>
+<p class="muted">Заполнение только при точном совпадении HTTPS-адреса.</p>
+<form id="unlock"><label>Email<input id="email" type="email" required autocomplete="username"></label><label>Мастер-пароль<input id="master" type="password" required autocomplete="current-password"></label><label>Секретный ключ<input id="secret" type="password" required autocomplete="off"></label><button id="submit" type="submit">Открыть хранилище</button><p class="muted">Сначала создайте аккаунт в <a href="http://localhost:8080" target="_blank" rel="noreferrer">локальном приложении</a>.</p></form>
+<section id="vault" hidden><p id="current" class="muted"></p><div id="entries"></div><p class="muted">Выбор записи для другого домена вызовет ошибку. Автовыход через 5 минут бездействия.</p></section><p id="status" role="status"></p>
+</body></html>

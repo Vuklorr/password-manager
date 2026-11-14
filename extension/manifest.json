@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Guard — безопасное автозаполнение",
+  "version": "1.0.0",
+  "description": "Заполняет сохранённые логины и пароли только при точном совпадении HTTPS origin.",
+  "minimum_chrome_version": "120",
+  "permissions": ["storage", "alarms", "activeTab", "tabs"],
+  "host_permissions": ["http://localhost:8080/*"],
+  "background": {"service_worker": "background.js", "type": "module"},
+  "action": {"default_popup": "popup.html", "default_title": "Guard — открыть хранилище"},
+  "content_scripts": [{"matches": ["https://*/*"], "js": ["content.js"], "run_at": "document_idle", "all_frames": false}],
+  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'none'"}
+}

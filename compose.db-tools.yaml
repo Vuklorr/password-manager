@@ -1,0 +1,6 @@
+# Optional local access for DBeaver, DataGrip, IntelliJ IDEA or pgAdmin.
+# Use explicitly: docker compose -f compose.yaml -f compose.db-tools.yaml up -d
+services:
+  db:
+    ports:
+      - "127.0.0.1:5433:5432"

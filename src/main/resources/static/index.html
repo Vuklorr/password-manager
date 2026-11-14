@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guard — менеджер паролей</title><link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script></head>
+<body>
+<header><a class="brand" href="/">◈ GUARD<span>Личное хранилище</span></a><span class="pill">AES-256 · шифрование в браузере</span><button id="lock" hidden class="secondary">Выход</button></header>
+<main>
+  <section id="welcome" class="intro"><div class="eyebrow">ВАШИ ПАРОЛИ. ПОД ВАШИМ КОНТРОЛЕМ.</div><h1>Один ключ.<br>Спокойнее каждый вход.</h1><p>Отдельные сложные пароли для каждого сайта.<br>Точное совпадение адреса перед автозаполнением.</p><div class="features"><span>↗ Защита от похожих доменов</span><span>◈ Секреты зашифрованы до отправки</span></div></section>
+  <section id="auth" class="panel auth-panel">
+    <div class="tabs"><button id="login-tab" class="selected">Войти</button><button id="register-tab" class="secondary">Создать хранилище</button></div>
+    <h2 id="auth-title">Открыть хранилище</h2>
+    <form id="auth-form">
+      <label>Email<input id="email" type="email" required maxlength="254" autocomplete="username" placeholder="you@example.com"></label>
+      <label>Мастер-пароль<input id="master" type="password" required minlength="14" maxlength="1024" autocomplete="current-password" placeholder="Длинная фраза, минимум 14 символов"></label>
+      <label id="confirm-label" hidden>Повторите мастер-пароль<input id="confirm-master" type="password" autocomplete="new-password"></label>
+      <label id="secret-label">Секретный ключ<input id="secret" type="password" autocomplete="off" spellcheck="false" placeholder="64 символа из аварийного комплекта"></label>
+      <p id="register-note" hidden class="muted">Секретный ключ будет создан на вашем устройстве. Сохраните его отдельно: без него и мастер-пароля восстановить доступ нельзя.</p>
+      <button id="auth-submit" type="submit" class="primary wide">Открыть хранилище →</button>
+    </form>
+    <p class="muted small">Мастер-пароль и секретный ключ не отправляются серверу.</p>
+  </section>
+  <section id="recovery" class="panel" hidden><div class="eyebrow">СОХРАНИТЕ СЕЙЧАС</div><h2>Ваш секретный ключ</h2><p>Он понадобится при каждом входе, в том числе в расширении. Держите копию отдельно от мастер-пароля.</p><code id="recovery-key"></code><button id="download-key" class="secondary">Скачать аварийный комплект</button><label class="check"><input id="key-saved" type="checkbox">Я сохранил ключ в надёжном месте</label><button id="continue" class="primary" disabled>Перейти в хранилище</button></section>
+  <section id="vault" hidden>
+    <div class="vault-heading"><div><div class="eyebrow">ЛИЧНОЕ ПРОСТРАНСТВО</div><h1>Ваше хранилище<span id="count" class="count">0</span></h1><p class="muted">Автовыход через 5 минут бездействия.</p></div><div><button id="export" class="secondary">Зашифрованная копия</button> <button id="add" class="primary">+ Добавить запись</button></div></div>
+    <input id="search" class="search" type="search" placeholder="Поиск по сайту или логину" aria-label="Поиск по хранилищу">
+    <div id="entries" class="entries"></div><div id="empty" class="panel empty" hidden><h2>Здесь будут ваши пароли</h2><p>Добавьте первый сайт и создайте для него уникальный пароль.</p></div>
+  </section>
+  <section id="editor" class="panel editor" hidden><h2 id="editor-title">Новая запись</h2><form id="entry-form">
+    <label>Название<input id="title" required maxlength="100" placeholder="Например, Google Почта"></label>
+    <label>Точный HTTPS-адрес сайта<input id="site" type="url" required maxlength="2048" placeholder="https://accounts.google.com"></label><p class="muted small">Домен и порт должны совпасть. Поддомены — отдельные сайты. Для входа в Gmail обычно используется accounts.google.com.</p>
+    <label>Логин<input id="entry-login" required maxlength="1000" autocomplete="off"></label>
+    <label class="password-label" for="entry-password">Пароль</label>
+    <div class="input-row"><input id="entry-password" type="password" required maxlength="1000" autocomplete="new-password"><button id="show-password" type="button" class="secondary">Показать пароль</button></div>
+    <div class="generator">
+      <label>Алфавит<select id="alphabet">
+        <option value="digits">Цифры (0–9)</option>
+        <option value="lowercase">Строчные буквы (a–z)</option>
+        <option value="alphanumeric">Цифры и буквы (0–9, a–z, A–Z)</option>
+        <option value="ascii" selected>ASCII (95 печатных символов)</option>
+      </select></label>
+      <label>Длина<input id="length" type="number" min="6" max="128" value="24"></label>
+      <button id="generate" type="button" class="secondary">⟳ Сгенерировать</button>
+    </div>
+    <div class="entropy">
+      <button id="calculate-entropy" type="button" class="secondary">Посчитать энтропию</button>
+      <output id="entropy" for="entry-password" class="small" hidden></output>
+    </div>
+    <label>Заметка<textarea id="notes" maxlength="4000" rows="3"></textarea></label>
+    <div class="actions"><button type="submit" class="primary">Зашифровать и сохранить</button><button id="cancel" type="button" class="secondary">Отмена</button></div>
+  </form></section>
+  <dialog id="secret-dialog" class="panel" aria-labelledby="secret-dialog-title">
+    <h2 id="secret-dialog-title"></h2>
+    <form id="secret-form">
+      <label>Секретный ключ из аварийного комплекта<input id="confirm-secret" class="guarded-password" type="password" required maxlength="64" autocomplete="off" spellcheck="false" autofocus></label>
+      <p id="secret-error" class="small" role="alert" hidden></p>
+      <div class="actions"><button id="secret-submit" type="submit" class="primary">Подтвердить</button><button id="secret-cancel" type="button" class="secondary">Отмена</button></div>
+    </form>
+  </dialog>
+  <p id="message" role="status" aria-live="polite" hidden></p>
+</main><footer>GUARD / Локальное шифрование · Точное совпадение адресов · Без внешних скриптов</footer>
+</body></html>
